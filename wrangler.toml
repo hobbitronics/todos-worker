@@ -4,3 +4,6 @@ account_id = "36e24b492314113676847b1c4a924c64"
 workers_dev = true
 route = ""
 zone_id = ""
+kv_namespaces = [
+  {binding = "TODOS", id = "d9b3f73d46ac473381749dd7a0107c33"}
+]
