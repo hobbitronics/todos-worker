@@ -1,0 +1,6 @@
+name = "todos-worker"
+type = "javascript"
+account_id = "36e24b492314113676847b1c4a924c64"
+workers_dev = true
+route = ""
+zone_id = ""
