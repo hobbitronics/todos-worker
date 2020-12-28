@@ -42,8 +42,8 @@ async function updateTodos(request) {
 }
 
 async function getTodos(request) {
-  jason = JSON.stringify(data.todos)
-  return new Response(jason, { status: 200 })
+  const body = JSON.stringify(data.todos)
+  return new Response(body, { status: 200 })
 }
 
 async function deleteTodos(request) {
