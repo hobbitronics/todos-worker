@@ -43,7 +43,7 @@ async function updateTodos(request) {
 
 async function getTodos(request) {
   const body = JSON.stringify(data.todos)
-  return new Response(body, { status: 200 })
+  return new Response(body, { status: 200 }, {headers: { "Content-Type": "application/javascript" }})
 }
 
 async function deleteTodos(request) {
