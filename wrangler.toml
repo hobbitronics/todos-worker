@@ -5,5 +5,5 @@ workers_dev = true
 route = ""
 zone_id = ""
 kv_namespaces = [
-  {binding = "TODOS", id = "d9b3f73d46ac473381749dd7a0107c33"}
+  {binding = "TODOS", preview_id = "d9b3f73d46ac473381749dd7a0107c33"}
 ]
