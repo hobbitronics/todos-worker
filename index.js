@@ -59,8 +59,8 @@ async function getTodos(request) {
 }
 
 async function deleteTodos(request) {
-  const body = await request.text()
   try {
+    const body = await request.text()
     const parsed = JSON.parse(body)
     data.todos = data.todos.filter(todo => todo.id !== parsed.id)
     console.log(data.todos)
