@@ -24,8 +24,8 @@ addEventListener('fetch', event => {
 })
 
 async function updateTodos(request) {
-  const body = await request.text()
   try {
+    const body = await request.text()
     //await setCache(body)
     const parsed = JSON.parse(body)
     const index = data.todos.findIndex(todo => todo.id === parsed.id)
@@ -39,7 +39,9 @@ async function updateTodos(request) {
       status: 200,
       headers: {
         "Content-Type": "application/javascript",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5501",
+        "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS","Access-Control-Allow-Headers": "Origin, Content-Type",
+        "Access-Control-Max-Age": 86400
       }
     })
   } catch (err) {
@@ -53,7 +55,10 @@ async function getTodos(request) {
     status: 200,
     headers: {
       "Content-Type": "application/javascript",
-      "Access-Control-Allow-Origin": "*"
+      "Access-Control-Allow-Origin": "http://127.0.0.1:5501",
+      "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS","Access-Control-Allow-Headers": "Origin, Content-Type",
+      "Access-Control-Max-Age": 86400,
+      "Connection": "Keep-Alive"
     }
   })
 }
@@ -68,7 +73,9 @@ async function deleteTodos(request) {
       status: 200,
       headers: {
         "Content-Type": "application/javascript",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5501",
+        "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS","Access-Control-Allow-Headers": "Origin, Content-Type",
+        "Access-Control-Max-Age": 86400
       }
     })
   } catch (err) {
