@@ -35,7 +35,13 @@ async function updateTodos(request) {
       data.todos.push(parsed)
     }
     console.log(data.todos)
-    return new Response(body, { status: 200 })
+    return new Response(body, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/javascript",
+        "Access-Control-Allow-Origin": "*"
+      }
+    })
   } catch (err) {
     return new Response(err, { status: 500 })
   }
@@ -43,7 +49,13 @@ async function updateTodos(request) {
 
 async function getTodos(request) {
   const body = JSON.stringify(data.todos)
-  return new Response(body, { status: 200 }, {headers: { "Content-Type": "application/javascript" }})
+  return new Response(body, { 
+    status: 200,
+    headers: {
+      "Content-Type": "application/javascript",
+      "Access-Control-Allow-Origin": "*"
+    }
+  })
 }
 
 async function deleteTodos(request) {
@@ -52,14 +64,20 @@ async function deleteTodos(request) {
     const parsed = JSON.parse(body)
     data.todos = data.todos.filter(todo => todo.id !== parsed.id)
     console.log(data.todos)
-    return new Response(body, { status: 200 })
+    return new Response(body, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/javascript",
+        "Access-Control-Allow-Origin": "*"
+      }
+    })
   } catch (err) {
     return new Response(err, { status: 500 })
   }
 }
 
 async function handleRequest(request) {
-  if (request.method == 'PUT') {
+  if (request.method == 'PUT' || request.method == 'POST') {
     return updateTodos(request)
   } else if (request.method == 'GET') {
     return getTodos(request)
