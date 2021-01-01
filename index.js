@@ -38,11 +38,8 @@ async function updateTodos(request) {
     return new Response(body, {
       status: 200,
       headers: {
-        "Content-Type": "application/javascript",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5501",
-        "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS","Access-Control-Allow-Headers": "Origin, Content-Type",
-        "Access-Control-Max-Age": 86400
-      }
+        'Content-Type': 'application/javascript',
+      },
     })
   } catch (err) {
     return new Response(err, { status: 500 })
@@ -51,15 +48,11 @@ async function updateTodos(request) {
 
 async function getTodos(request) {
   const body = JSON.stringify(data.todos)
-  return new Response(body, { 
+  return new Response(body, {
     status: 200,
     headers: {
-      "Content-Type": "application/javascript",
-      "Access-Control-Allow-Origin": "http://127.0.0.1:5501",
-      "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS","Access-Control-Allow-Headers": "Origin, Content-Type",
-      "Access-Control-Max-Age": 86400,
-      "Connection": "Keep-Alive"
-    }
+      'Content-Type': 'text/html',
+    },
   })
 }
 
@@ -72,11 +65,8 @@ async function deleteTodos(request) {
     return new Response(body, {
       status: 200,
       headers: {
-        "Content-Type": "application/javascript",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5501",
-        "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS","Access-Control-Allow-Headers": "Origin, Content-Type",
-        "Access-Control-Max-Age": 86400
-      }
+        'Content-Type': 'application/javascript',
+      },
     })
   } catch (err) {
     return new Response(err, { status: 500 })
