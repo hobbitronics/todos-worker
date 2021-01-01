@@ -1,24 +1,3 @@
-let id = 1
-const data = {
-  todos: [
-    {
-      id: id++,
-      title: 'do thing 1',
-      completed: false,
-    },
-    {
-      id: id++,
-      title: 'do thing 2',
-      completed: false,
-    },
-    {
-      id: id++,
-      title: 'do thing 3',
-      completed: false,
-    },
-  ],
-}
-
 const html = data => `
 <!DOCTYPE html>
 <head>
@@ -236,22 +215,29 @@ const html = data => `
   }
 </style>`
 
+const defaultData = { todos: [] }
+
+const setCache = (key, data) => TODOS.put(key, data)
+const getCache = key => TODOS.get(key)
+
 addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request))
 })
 
 async function updateTodos(request) {
+  const ip = request.headers.get('CF-Connecting-IP')
+  const myKey = `data-${ip}`
   try {
     const body = await request.text()
-    //await setCache(body)
+    await setCache(myKey, body)
     const parsed = JSON.parse(body)
-    const index = data.todos.findIndex(todo => todo.id === parsed.id)
+    const index = defaultData.todos.findIndex(todo => todo.id === parsed.id)
     if (index > -1) {
-      data.todos[index] = parsed
+      defaultData.todos[index] = parsed
     } else {
-      data.todos.push(parsed)
+      defaultData.todos.push(parsed)
     }
-    console.log(data.todos)
+    console.log(defaultData.todos)
     return new Response(body, {
       status: 200,
       headers: {
@@ -264,7 +250,19 @@ async function updateTodos(request) {
 }
 
 async function getTodos(request) {
-  const body = html(JSON.stringify(data.todos || []).replace(/</g, '\\u003c'))
+  const ip = request.headers.get('CF-Connecting-IP')
+  const myKey = `data-${ip}`
+  let data
+  const cache = await getCache(myKey)
+  if (!cache) {
+    await setCache(myKey, JSON.stringify(defaultData))
+    data = defaultData
+  } else {
+    data = JSON.parse(cache)
+  }
+  const body = html(
+    JSON.stringify(defaultData.todos || []).replace(/</g, '\\u003c'),
+  )
   return new Response(body, {
     status: 200,
     headers: {
@@ -277,8 +275,8 @@ async function deleteTodos(request) {
   try {
     const body = await request.text()
     const parsed = JSON.parse(body)
-    data.todos = data.todos.filter(todo => todo.id !== parsed.id)
-    console.log(data.todos)
+    defaultData.todos = defaultData.todos.filter(todo => todo.id !== parsed.id)
+    console.log(defaultData.todos)
     return new Response(body, {
       status: 200,
       headers: {
