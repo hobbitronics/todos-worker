@@ -146,7 +146,7 @@ const html = data => `
         completed: false,
       }
       todos.push(newTodo)
-      const data = updateTodo()
+      const data = await updateTodo()
       renderTodos(data.todos.find(todo => todo.id === newTodo.id))
       text.value = ''
     }
