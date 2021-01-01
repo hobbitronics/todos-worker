@@ -209,15 +209,8 @@ async function updateTodos(request) {
   const ip = request.headers.get('CF-Connecting-IP')
   const myKey = `data-${ip}`
   try {
-    // const parsed =
     JSON.parse(body)
     await setCache(myKey, body)
-    // const index = defaultData.todos.findIndex(todo => todo.id === parsed.id)
-    // if (index > -1) {
-    //   defaultData.todos[index] = parsed
-    // } else {
-    //   defaultData.todos.push(parsed)
-    // }
     return new Response(body, {
       status: 200,
       headers: {
