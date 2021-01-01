@@ -150,6 +150,7 @@ const html = data => `
           }
         }
       })
+      todos = todos.filter(todo => todo.completed == true)  
     })
   
     const addTodo = async title => {
@@ -278,8 +279,8 @@ async function deleteTodos(request) {
   try {
     const parsed = JSON.parse(body)
     deleteCache(myKey, body)
-    defaultData.todos = defaultData.todos.filter(todo => todo.id !== parsed.id)
-    console.log(defaultData.todos)
+    // defaultData.todos = defaultData.todos.filter(todo => todo.id !== parsed.id)
+    // console.log(defaultData.todos)
     return new Response(body, {
       status: 200,
       headers: {
