@@ -199,7 +199,6 @@ const defaultData = { todos: [{ id: 1, title: 'hi', completed: false }] }
 
 const getCache = key => TODOS.get(key)
 const setCache = (key, data) => TODOS.put(key, data)
-const deleteCache = (key, data) => TODOS.delete(key, data)
 
 addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request))
@@ -250,32 +249,10 @@ async function getTodos(request) {
   })
 }
 
-async function deleteTodos(request) {
-  const ip = request.headers.get('CF-Connecting-IP')
-  const myKey = `data-${ip}`
-  const body = await request.text()
-  try {
-    const parsed = JSON.parse(body)
-    deleteCache(myKey, body)
-    // defaultData.todos = defaultData.todos.filter(todo => todo.id !== parsed.id)
-    // console.log(defaultData.todos)
-    return new Response(body, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/javascript',
-      },
-    })
-  } catch (err) {
-    return new Response(err, { status: 500 })
-  }
-}
-
 async function handleRequest(request) {
   if (request.method == 'PUT' || request.method == 'POST') {
     return updateTodos(request)
   } else if (request.method == 'GET') {
     return getTodos(request)
-  } else if (request.method == 'DELETE') {
-    return deleteTodos(request)
   }
 }
