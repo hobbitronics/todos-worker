@@ -72,7 +72,7 @@ const html = data => `
           },
         )
         const data = await response.json()
-        // console.log(data)
+        return data
       } catch (e) {
         console.log(
           Error(
@@ -146,14 +146,7 @@ const html = data => `
         completed: false,
       }
       todos.push(newTodo)
-      const response = await fetch(url, {
-        method: 'POST',
-        body: JSON.stringify({todos: todos}),
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-        },
-      })
-      const data = await response.json()
+      const data = updateTodo()
       renderTodos(data.todos.find(todo => todo.id === newTodo.id))
       text.value = ''
     }
