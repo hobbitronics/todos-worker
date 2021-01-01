@@ -216,7 +216,7 @@ const html = data => `
   }
 </style>`
 
-const defaultData = { todos: [] }
+const defaultData = { todos: [{ id: 1, title: 'hi', completed: false }] }
 
 const setCache = (key, data) => TODOS.put(key, data)
 const getCache = key => TODOS.get(key)
@@ -261,9 +261,7 @@ async function getTodos(request) {
   } else {
     data = JSON.parse(cache)
   }
-  const body = html(
-    JSON.stringify(defaultData.todos || []).replace(/</g, '\\u003c'),
-  )
+  const body = html(JSON.stringify(data.todos || []).replace(/</g, '\\u003c'))
   return new Response(body, {
     status: 200,
     headers: {
