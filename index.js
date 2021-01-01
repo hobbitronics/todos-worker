@@ -135,22 +135,8 @@ const html = data => `
     delBtn.addEventListener('click', () => {
       const checkedBoxes = document.querySelectorAll('#checked')
       checkedBoxes.forEach(checkedBox => container.removeChild(checkedBox))
-      todos.forEach(todo => {
-        if (todo.completed === true) {
-          try {
-            fetch(url, {
-              method: 'DELETE',
-              body: JSON.stringify(todo),
-              headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-              },
-            })
-          } catch (e) {
-            console.log(e)
-          }
-        }
-      })
-      todos = todos.filter(todo => todo.completed == true)  
+      todos = todos.filter(todo => todo.completed == true) 
+      updateTodo()
     })
   
     const addTodo = async title => {
@@ -168,8 +154,7 @@ const html = data => `
         },
       })
       const data = await response.json()
-      todos.push(data)
-      renderTodos(data)
+      renderTodos(data.todos.find(todo => todo.id === newTodo.id))
       text.value = ''
     }
   
