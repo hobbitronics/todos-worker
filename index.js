@@ -238,7 +238,6 @@ async function updateTodos(request) {
     // } else {
     //   defaultData.todos.push(parsed)
     // }
-    console.log('default data' + defaultData.todos)
     return new Response(body, {
       status: 200,
       headers: {
@@ -273,8 +272,10 @@ async function getTodos(request) {
 }
 
 async function deleteTodos(request) {
+  const ip = request.headers.get('CF-Connecting-IP')
+  const myKey = `data-${ip}`
+  const body = await request.text()
   try {
-    const body = await request.text()
     const parsed = JSON.parse(body)
     defaultData.todos = defaultData.todos.filter(todo => todo.id !== parsed.id)
     console.log(defaultData.todos)
