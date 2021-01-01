@@ -135,7 +135,7 @@ const html = data => `
     delBtn.addEventListener('click', () => {
       const checkedBoxes = document.querySelectorAll('#checked')
       checkedBoxes.forEach(checkedBox => container.removeChild(checkedBox))
-      todos = todos.filter(todo => todo.completed == true) 
+      todos = todos.filter(todo => todo.completed == false) 
       updateTodo()
     })
   
