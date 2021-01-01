@@ -59,13 +59,13 @@ const html = data => `
       return newTodo
     }
   
-    const updateTodo = async todo => {
+    const updateTodo = async () => {
       try {
         const response = await fetch(
           url,
           {
             method: 'PUT',
-            body: JSON.stringify(todo),
+            body: JSON.stringify({todos: todos}),
             headers: {
               'Content-type': 'application/json; charset=UTF-8',
             },
@@ -92,7 +92,7 @@ const html = data => `
           newTodo = todoMarkedIncomlplete(newTodo)
           todos[index].completed = false
         }
-        updateTodo(todos[index])
+        updateTodo()
       })
   
     const renderTodos = todo => {
@@ -159,9 +159,10 @@ const html = data => `
         title,
         completed: false,
       }
+      todos.push(newTodo)
       const response = await fetch(url, {
         method: 'POST',
-        body: JSON.stringify(newTodo),
+        body: JSON.stringify({todos: todos}),
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
         },
