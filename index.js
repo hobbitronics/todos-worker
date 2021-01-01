@@ -277,6 +277,7 @@ async function deleteTodos(request) {
   const body = await request.text()
   try {
     const parsed = JSON.parse(body)
+    deleteCache(myKey, body)
     defaultData.todos = defaultData.todos.filter(todo => todo.id !== parsed.id)
     console.log(defaultData.todos)
     return new Response(body, {
