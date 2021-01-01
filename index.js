@@ -218,8 +218,8 @@ const html = data => `
 
 const defaultData = { todos: [{ id: 1, title: 'hi', completed: false }] }
 
-const setCache = (key, data) => TODOS.put(key, data)
 const getCache = key => TODOS.get(key)
+const setCache = (key, data) => TODOS.put(key, data)
 const deleteCache = (key, data) => TODOS.delete(key, data)
 
 addEventListener('fetch', event => {
@@ -227,11 +227,12 @@ addEventListener('fetch', event => {
 })
 
 async function updateTodos(request) {
+  const body = await request.text()
   const ip = request.headers.get('CF-Connecting-IP')
   const myKey = `data-${ip}`
-  const body = await request.text()
   try {
-    const parsed = JSON.parse(body)
+    // const parsed =
+    JSON.parse(body)
     await setCache(myKey, body)
     // const index = defaultData.todos.findIndex(todo => todo.id === parsed.id)
     // if (index > -1) {
