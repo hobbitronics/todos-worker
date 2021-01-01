@@ -1,48 +1,221 @@
-let id = 1
-const data = {
-  todos: [
-    {
-      id: id++,
-      title: 'do thing 1',
-      completed: false,
-    },
-    {
-      id: id++,
-      title: 'do thing 2',
-      completed: false,
-    },
-    {
-      id: id++,
-      title: 'do thing 3',
-      completed: false,
-    },
-  ],
-}
+const html = data => `
+<!DOCTYPE html>
+<head>
+  <title>Javascript Todo List</title>
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-blue.min.css">
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+</head>
+
+<html>
+  <body>
+    <div class="demo-card-wide mdl-card mdl-shadow--2dp centered">
+      <div class="mdl-card__title">
+        <h2 class="mdl-card__title-text">Todo List</h2>
+      </div>
+
+      <div class="mdl-card__supporting-text">
+        todo: <input id="text" type="text" placeholder="enter todo">
+        <button id="add" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn">add</button>
+
+        <ul id="container" class="demo-list-control mdl-list">
+        </ul>
+        <button id="del" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn">delete todos</button>
+      </div>
+
+      <div class="mdl-card__actions mdl-card--border">
+        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+          Back to my projects
+        </a>
+      </div>
+      
+      <div class="mdl-card__menu">
+        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+          <i class="material-icons">share</i>
+        </button>
+      </div>
+    </div>
+  </body>
+  
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    let todos = ${data}
+    const url = 'http://127.0.0.1:8787'
+    const addBtn = document.getElementById('add')
+    const text = document.getElementById('text')
+    const container = document.getElementById('container')
+    const delBtn = document.getElementById('del')
+  
+    const todoCompleted = newTodo => {
+      newTodo.querySelector('#content').style = 'text-decoration: line-through'
+      newTodo.id = 'checked'
+      return newTodo
+    }
+  
+    const todoMarkedIncomlplete = newTodo => {
+      newTodo.querySelector('#content').style = ''
+      newTodo.id = ''
+      return newTodo
+    }
+  
+    const updateTodo = async () => {
+      try {
+        const response = await fetch(
+          url,
+          {
+            method: 'PUT',
+            body: JSON.stringify({todos: todos}),
+            headers: {
+              'Content-type': 'application/json; charset=UTF-8',
+            },
+          },
+        )
+        const data = await response.json()
+        return data
+      } catch (e) {
+        console.log(
+          Error(
+              e,
+          ),
+        )
+      }
+    }
+  
+    const watchBox = (box, newTodo) =>
+      box.addEventListener('click', () => {
+        const index = todos.findIndex(todo => todo.id == box.id)
+        if (box.checked === true) {
+          newTodo = todoCompleted(newTodo)
+          todos[index].completed = true
+        } else {
+          newTodo = todoMarkedIncomlplete(newTodo)
+          todos[index].completed = false
+        }
+        updateTodo()
+      })
+  
+    const renderTodos = todo => {
+      let newTodo = document.createElement('li')
+      const todoContent = document.createElement('span')
+      const doneWrapWrap = document.createElement('span')
+      const doneWrap = document.createElement('label')
+      const done = document.createElement('input')
+      newTodo.className = 'mdl-list__item'
+      todoContent.className = 'mdl-list__item-primary-content'
+      todoContent.id = 'content'
+      doneWrapWrap.className = 'mdl-list__item-secondary-action'
+      doneWrap.className = 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect'
+      doneWrap.for = todo.id
+      done.type = 'checkbox'
+      done.id = todo.id
+      done.className = 'mdl-checkbox__input'
+      todoContent.innerText = todo.title
+      doneWrap.appendChild(done)
+      doneWrapWrap.appendChild(doneWrap)
+      newTodo.appendChild(todoContent)
+      newTodo.appendChild(doneWrapWrap)
+      if (todo.completed) {
+        done.checked = true
+        newTodo = todoCompleted(newTodo)
+      } else {
+        newTodo = todoMarkedIncomlplete(newTodo)
+      }
+      componentHandler.upgradeElement(newTodo)
+      componentHandler.upgradeElement(todoContent)
+      componentHandler.upgradeElement(doneWrapWrap)
+      componentHandler.upgradeElement(doneWrap)
+      componentHandler.upgradeElement(done)
+      container.appendChild(newTodo)
+      watchBox(done, newTodo)
+    }
+  
+    todos.forEach(todo => renderTodos(todo))
+  
+    delBtn.addEventListener('click', () => {
+      const checkedBoxes = document.querySelectorAll('#checked')
+      checkedBoxes.forEach(checkedBox => container.removeChild(checkedBox))
+      todos = todos.filter(todo => todo.completed == false) 
+      updateTodo()
+    })
+  
+    const addTodo = async title => {
+      const newTodo = {
+        id: Math.floor(Math.random() * 1000),
+        title,
+        completed: false,
+      }
+      todos.push(newTodo)
+      const data = await updateTodo()
+      renderTodos(data.todos.find(todo => todo.id === newTodo.id))
+      text.value = ''
+    }
+  
+    addBtn.addEventListener('click', () => addTodo(text.value))
+    text.addEventListener(
+      'keydown',
+      event => event.key === 'Enter' && addTodo(text.value),
+    )
+  })
+  </script>
+</html>
+
+
+<style>
+  body .btn {
+    margin: 4px 8px;
+  }
+
+  .demo-card-wide.mdl-card {
+    width: auto;
+  }
+
+  .demo-card-wide > .mdl-card__title {
+    color: #fff;
+    height: 176px;
+    background: url('https://getmdl.io/assets/demos/welcome_card.jpg') center / cover;
+  }
+
+  .demo-card-wide > .mdl-card__menu {
+    color: #fff;
+  }
+
+  body {
+    padding: 20px;
+    background: #fafafa;
+    position: relative;
+  }
+
+  .centered {
+    margin: auto;
+  }
+
+  .demo-list-control {
+    width: 350px;
+  }
+</style>`
+
+const defaultData = { todos: [{ id: 1, title: 'hi', completed: false }] }
+
+const getCache = key => TODOS.get(key)
+const setCache = (key, data) => TODOS.put(key, data)
 
 addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request))
 })
 
 async function updateTodos(request) {
+  const body = await request.text()
+  const ip = request.headers.get('CF-Connecting-IP')
+  const myKey = `data-${ip}`
   try {
-    const body = await request.text()
-    //await setCache(body)
-    const parsed = JSON.parse(body)
-    const index = data.todos.findIndex(todo => todo.id === parsed.id)
-    if (index > -1) {
-      data.todos[index] = parsed
-    } else {
-      data.todos.push(parsed)
-    }
-    console.log(data.todos)
+    JSON.parse(body)
+    await setCache(myKey, body)
     return new Response(body, {
       status: 200,
       headers: {
-        "Content-Type": "application/javascript",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5501",
-        "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS","Access-Control-Allow-Headers": "Origin, Content-Type",
-        "Access-Control-Max-Age": 86400
-      }
+        'Content-Type': 'application/javascript',
+      },
     })
   } catch (err) {
     return new Response(err, { status: 500 })
@@ -50,37 +223,23 @@ async function updateTodos(request) {
 }
 
 async function getTodos(request) {
-  const body = JSON.stringify(data.todos)
-  return new Response(body, { 
+  const ip = request.headers.get('CF-Connecting-IP')
+  const myKey = `data-${ip}`
+  let data
+  const cache = await getCache(myKey)
+  if (!cache) {
+    await setCache(myKey, JSON.stringify(defaultData))
+    data = defaultData
+  } else {
+    data = JSON.parse(cache)
+  }
+  const body = html(JSON.stringify(data.todos || []).replace(/</g, '\\u003c'))
+  return new Response(body, {
     status: 200,
     headers: {
-      "Content-Type": "application/javascript",
-      "Access-Control-Allow-Origin": "http://127.0.0.1:5501",
-      "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS","Access-Control-Allow-Headers": "Origin, Content-Type",
-      "Access-Control-Max-Age": 86400,
-      "Connection": "Keep-Alive"
-    }
+      'Content-Type': 'text/html',
+    },
   })
-}
-
-async function deleteTodos(request) {
-  try {
-    const body = await request.text()
-    const parsed = JSON.parse(body)
-    data.todos = data.todos.filter(todo => todo.id !== parsed.id)
-    console.log(data.todos)
-    return new Response(body, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/javascript",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5501",
-        "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS","Access-Control-Allow-Headers": "Origin, Content-Type",
-        "Access-Control-Max-Age": 86400
-      }
-    })
-  } catch (err) {
-    return new Response(err, { status: 500 })
-  }
 }
 
 async function handleRequest(request) {
@@ -88,7 +247,5 @@ async function handleRequest(request) {
     return updateTodos(request)
   } else if (request.method == 'GET') {
     return getTodos(request)
-  } else if (request.method == 'DELETE') {
-    return deleteTodos(request)
   }
 }
